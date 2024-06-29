@@ -36,7 +36,7 @@ describe('Testing User Model', async () =>{
 })
 
 
-test.only('Testing Creation of a user ',async () =>{
+test('Testing Creation of a user ',async () =>{
 
     const all = await supertest(app).get('/api/users')
     const person  = {
@@ -58,6 +58,27 @@ test.only('Testing Creation of a user ',async () =>{
     
 })
 
+
+test.only('Without Token',async () =>{
+    const first = await supertest(app).get('/api/blogs')
+    const blog = {
+        "title":"The Famous Story of Menelik II",
+        "author":"667fc48409b627f68100ce62",
+        "url":"https://localhost:3001",
+        "likes":60     
+    }
+    const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2N2ZjNDg0MDliNjI3ZjY4MTAwY2U2MiIsImlhdCI6MTcxOTY1MDI2M30.9ZAjIdtXw-O30n-z0b1fzI23viJc5OOmNOO65QvZmRI'
+    await supertest(app)
+        .post('/api/blogs')
+        .send(blog)
+        .set("Authorization", token)
+        .expect(400)
+        .expect('Content-type',/application\/json/)
+
+
+    const second = await supertest(app).get('/api/blogs')
+    assert.strictEqual(first.body.length,second.body.length)
+})
 
 after(() =>{
     mongo.connection.close()

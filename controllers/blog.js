@@ -27,9 +27,9 @@ blog.get('/', async (request, response) => {
 blog.post('/',async (req,res) =>{
   const {title, author, url, likes } = req.body
 
-  const token = getFromToken(req)
-
-  const fromToken = jwt.verify(token,process.env.SECRET)
+  // const token = getFromToken(req)
+  console.log(req.token)
+  const fromToken = jwt.verify(req.token,process.env.SECRET)
 
 
   const user = await User.findById(fromToken.id)
@@ -86,17 +86,33 @@ blog.get(`/:id`,async(request,response) =>{
 
 
 blog.delete('/:id',async(request, response) =>{
- 
-    const arr = await Blog.find({_id:request.params.id})
-    if (arr.length > 0){
-      await Blog.findByIdAndDelete({_id:request.params.id})
+    
+    const toDelete = request.params.id
+    const verified = jwt.verify(request.token,process.env.SECRET)
+
+
+    const user = await User.findById(verified.id)
+
+    const found = user.blog.includes(toDelete)
+
+    if(found){
+
+      const arr = await Blog.find({_id:request.params.id})
+      if (arr.length > 0){
+        await Blog.findByIdAndDelete({_id:request.params.id})
+        return response.status(200).json({
+         message:'It is deleted!'
+        })
+      }
       return response.status(200).json({
-       message:'It is deleted!'
+        message:'Has already been deleted'
       })
     }
-    return response.status(200).json({
-      message:'Has already been deleted'
-    })
+    else{
+      response.status(401).json({
+        messeage:"Unauthorized Delete Operation!"
+      })
+    }
  
 })
 

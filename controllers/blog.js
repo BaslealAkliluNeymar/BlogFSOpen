@@ -27,10 +27,12 @@ blog.get('/', async (request, response) => {
 blog.post('/',async (req,res) =>{
   const {title, author, url, likes } = req.body
 
+  
   // const token = getFromToken(req)
-  console.log(req.token)
+
   const fromToken = jwt.verify(req.token,process.env.SECRET)
 
+  console.log(fromToken)
 
   const user = await User.findById(fromToken.id)
 

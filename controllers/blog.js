@@ -71,22 +71,6 @@ blog.get(`/:id`,async(request,response) =>{
   return response.json(blog)
 })
   
-// blog.post('/',async (request, response) => {
-//     console.log(request.body)
-//     if (request.body.title && request.body.url){
-//       const blog = new Blog(request.body)
-  
-//       await blog.save()
-          
-//       return response.status(201).json(blog)
-
-//     }
-//     return response.status(404).json({
-//       message:"add Title and URL"
-//     })
-// })
-
-
 blog.delete('/:id',async(request, response) =>{
     
     const toDelete = request.params.id

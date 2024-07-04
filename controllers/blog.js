@@ -119,6 +119,25 @@ blog.delete('/:id',async(request, response) =>{
 })
 
 
+blog.put('/:id',async (req,res) =>{
+  const blog = await Blog.findById(req.params.id)
+
+  if(blog){
+    const newBlog = req.body
+    
+    
+    const savedBlog = new Blog(newBlog)
+  
+    await savedBlog.save()
+  
+    res.status(200).json({
+      message:"Blog Updated"
+    })
+  
+ 
+  }
+})
+
 
 
 

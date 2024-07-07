@@ -1,14 +1,12 @@
-//This is the Router file for all api endpoints concerning users
-
-const user = require('express').Router() // Router for users
-const User = require('../models/user') // User model 
+const user = require('express').Router() 
+const User = require('../models/user') 
 const mongo = require('mongoose')
 const logger = require('../utils/logger')
 const bcrypt = require('bcrypt')
 
 
 user.get('/',async (req,res) =>{
-    const all = await User.find({}).populate("blog")
+    const all = await User.find({}).populate("blog",{author:1, url:1, likes:1,title:1})
     res.status(200).json(all)
 })
 

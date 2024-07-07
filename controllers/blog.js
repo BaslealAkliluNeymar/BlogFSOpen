@@ -17,9 +17,8 @@ const getFromToken = (request) => {
 blog.get('/', async (request, response) => {
     const blogs = await Blog.find({})
       .populate('author',{
-        title:1,
-        url:1,
-        likes:1
+        username:1,
+        name:1
       })
     return response.json(blogs)
   })
@@ -72,10 +71,11 @@ blog.get(`/:id`,async(request,response) =>{
 })
   
 blog.delete('/:id',async(request, response) =>{
-    
+    console.log(request.token)
+    // console.log(request.user)
     const toDelete = request.params.id
     const verified = jwt.verify(request.token,process.env.SECRET)
-
+    console.log('Here it isnt working',verified)
 
     const user = await User.findById(verified.id)
 
@@ -104,24 +104,13 @@ blog.delete('/:id',async(request, response) =>{
 
 
 blog.put('/:id',async (req,res) =>{
-  const blog = await Blog.findById(req.params.id)
-
-  if(blog){
-    const newBlog = req.body
-    
-    
-    const savedBlog = new Blog(newBlog)
-  
-    await savedBlog.save()
-  
-    res.status(200).json({
-      message:"Blog Updated"
-    })
-  
+  const blog = req.body
  
-  }
-})
+  const updated = await Blog.updateOne({_id:req.params.id},{$set: { likes: blog.likes } })
 
+ 
+  res.status(200).json(updated)
+})
 
 
 

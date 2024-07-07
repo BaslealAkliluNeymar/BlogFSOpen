@@ -49,7 +49,6 @@ const userExtractor = async (request, response,next) =>{
   else{
     request.user = null
   }
-
   next()
 
 }
